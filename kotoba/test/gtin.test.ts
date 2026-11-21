@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, it, expect, beforeEach } from "vitest";
 import { MockEtzhayyim } from "@etzhayyim/sdk-mock";
 import {
@@ -148,6 +149,79 @@ describe("gtin kotoba", () => {
       expect(
         result.items.every((p) => p.manufacturer === "Acme Corp")
       ).toBe(true);
+    });
+  });
+
+  describe("identifier scope pins (AWAI-3808)", () => {
+    // Parity vectors: check-digit example values only, mirrored in
+    // docs/identifier-scope.md. Not a registry excerpt — adding, removing,
+    // or rewording a row here must fail loudly (see EXPECTED_GTIN_VECTOR_ROWS).
+    const GTIN_PARITY_VECTORS = [
+      { gtin: "4006381333931", status: "valid", format: "GTIN-13" },
+      { gtin: "012345678905", status: "valid", format: "UPC-12" },
+      { gtin: "4901020203104", status: "valid", format: "GTIN-13" },
+      { gtin: "5901234123456", status: "rejected" },
+      { gtin: "invalid-gtin", status: "rejected" },
+    ] as const;
+    const EXPECTED_GTIN_VECTOR_ROWS = 5;
+
+    // Sibling pins, measured 2026-11-22 on each repo's `main`
+    // (gh api trees + contents). Read-only: this issue changes nothing in
+    // those repos, so the doc carries the pins and this test gates the doc.
+    const SIBLING_PINS = [
+      "network-awai/app-isbn",
+      "network-awai/app-issn",
+      "| 22 |",
+      "| 16 |",
+      "| 20 |",
+      "18 lines | 7 assertions",
+      "17 lines | 8 assertions",
+    ] as const;
+
+    it("pins the GTIN parity vector row count", async () => {
+      expect(
+        GTIN_PARITY_VECTORS.length,
+        `GTIN parity vector row count changed: expected ${EXPECTED_GTIN_VECTOR_ROWS}, ` +
+          `found ${GTIN_PARITY_VECTORS.length} — a vector row was added, removed, or the pin was altered`
+      ).toBe(EXPECTED_GTIN_VECTOR_ROWS);
+      for (const v of GTIN_PARITY_VECTORS) {
+        const result: any = await validateGtin(e, { gtin: v.gtin });
+        expect(
+          result.status,
+          `parity vector ${v.gtin}: expected status ${v.status}, got ${result.status}`
+        ).toBe(v.status);
+        if (v.status === "valid") {
+          expect(
+            result.format,
+            `parity vector ${v.gtin}: expected format ${v.format}, got ${result.format}`
+          ).toBe((v as { format?: string }).format);
+        }
+      }
+      console.log(
+        `identifier-scope pins: gtin_vectors=${GTIN_PARITY_VECTORS.length}`
+      );
+    });
+
+    it("doc states validator-not-registry and pins sibling vectors", () => {
+      const doc = readFileSync(
+        new URL("../../docs/identifier-scope.md", import.meta.url),
+        "utf8"
+      );
+      expect(
+        doc.includes("These repositories are validators, not registries."),
+        `identifier-scope.md: the "not a registry" sentence is missing or reworded — ` +
+          `the validator-not-registry statement must stay verbatim`
+      ).toBe(true);
+      for (const pin of SIBLING_PINS) {
+        expect(
+          doc.includes(pin),
+          `identifier-scope.md: sibling pin missing: ${pin} — ` +
+            `a pinned vector file, line count, or blob count was edited or dropped`
+        ).toBe(true);
+      }
+      console.log(
+        `identifier-scope pins: sibling_pins=${SIBLING_PINS.length} doc=docs/identifier-scope.md`
+      );
     });
   });
 });
