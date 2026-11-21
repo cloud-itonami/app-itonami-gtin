@@ -199,9 +199,25 @@ rightmost payload digit. `isValidGtin` applies it to all four lengths.
 
 ## Status
 
-The record layer runs; nothing is deployed. `kotoba/` installs, and 17 tests
-pass across two files (12 behavioural, 5 pinning this README). What that green
+The record layer runs; nothing is deployed. `kotoba/` installs, and 19 tests
+pass across two files (14 in `gtin.test.ts` — 12 behavioural plus 2 pinning
+the identifier scope — and 5 pinning this README). What that green
 run does **not** mean: no PDS has been written to, `gtin.etzhayyim.com` serves
 nothing, the `xrpc-adapter` Worker has never been built, and no GTIN in any
 example here corresponds to a real product — `5901234123457` and `012345678905`
 are the check-digit examples GS1 uses in its own documentation.
+
+## License
+
+This repository ships no `LICENSE` file, deliberately: the license and the
+rights-holder name for the parts created here
+(`docs/identifier-scope.md`, the `identifier scope pins` block added to
+`kotoba/test/gtin.test.ts`, and this section) are pending the owner's
+decision, and a published license cannot be taken back once public. Until
+that decision, do not treat any file here as carrying an implied license.
+
+There is no `data/` directory and no vendored third-party data, so there are
+no third-party dataset terms to keep. Check-digit example values are cited
+with their sources in
+[`docs/identifier-scope.md`](docs/identifier-scope.md) and remain under
+their sources' terms.
