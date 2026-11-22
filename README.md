@@ -87,7 +87,7 @@ const e = new MockEtzhayyim({ did: "did:web:gtin.etzhayyim.com" });
 ```ts
 await validateGtin(e, { gtin: "5901234123457" });  // { status: "valid", format: "GTIN-13" }
 await validateGtin(e, { gtin: "012345678905" });   // { status: "valid", format: "UPC-12" }
-await validateGtin(e, { gtin: "4901020203104" });  // { status: "valid", format: "GTIN-13" }
+await validateGtin(e, { gtin: "4569951116179" });  // { status: "valid", format: "GTIN-13" }
 await validateGtin(e, { gtin: "5901234123456" });  // { status: "rejected", error: "invalidChecksum" }
 await validateGtin(e, { gtin: "invalid-gtin" });   // { status: "rejected", error: "invalidFormat" }
 ```
@@ -174,7 +174,7 @@ Exported for callers that need the arithmetic without an SDK instance:
 
 ```ts
 normalizeGtinDigits("590-1234-123-457");  // "5901234123457"
-detectCodeType("4901020203104");          // "jan-13"   (13 digits, prefix 49)
+detectCodeType("4569951116179");          // "jan-13"   (13 digits, prefix 45)
 detectCodeType("5901234123457");          // "ean-13"
 isValidGtin("5901234123457");             // true
 toGtin14("5901234123457");                // "05901234123457"
@@ -191,7 +191,7 @@ suffix:
 | GTIN-8 | 8 | `01234565` | `00000001234565` |
 | UPC-12 | 12 | `012345678905` | `00012345678905` |
 | EAN-13 | 13 | `5901234123457` | `05901234123457` |
-| JAN-13 | 13 | `4901020203104` | `04901020203104` |
+| JAN-13 | 13 | `4569951116179` | `04569951116179` |
 | GTIN-14 | 14 | `19012345678901` | `19012345678901` |
 
 The check digit is modulo 10 with weights alternating 3 and 1 from the
@@ -205,7 +205,9 @@ the identifier scope — and 5 pinning this README). What that green
 run does **not** mean: no PDS has been written to, `gtin.etzhayyim.com` serves
 nothing, the `xrpc-adapter` Worker has never been built, and no GTIN in any
 example here corresponds to a real product — `5901234123457` and `012345678905`
-are the check-digit examples GS1 uses in its own documentation.
+are the check-digit examples GS1 uses in its own documentation, and `4569951116179`
+is GS1 Japan's Basic Guide worked JAN example. The EAN-13 slot uses the Poland 590
+prefix, outside the 45/49 Japanese numbering space, and the 49-prefixed example is gone.
 
 ## License
 

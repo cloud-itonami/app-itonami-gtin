@@ -152,14 +152,21 @@ describe("gtin kotoba", () => {
     });
   });
 
-  describe("identifier scope pins (AWAI-3808)", () => {
+  describe("identifier scope pins (AWAI-3808, AWAI-3817)", () => {
     // Parity vectors: check-digit example values only, mirrored in
     // docs/identifier-scope.md. Not a registry excerpt — adding, removing,
     // or rewording a row here must fail loudly (see EXPECTED_GTIN_VECTOR_ROWS).
+    // Every value below is a published check-digit example, never a product:
+    // 5901234123457 is GS1's own published worked EAN-13 example (Poland 590
+    // prefix, outside the 45/49 Japanese numbering space);
+    // 4569951116179 is GS1 Japan's Basic Guide p.17 worked JAN example
+    // (check digit 9); 012345678905 is the canonical published UPC-A example;
+    // 5901234123456 is the GS1 example payload with a corrupted check digit,
+    // so the invalid case proves the check digit is what gets verified.
     const GTIN_PARITY_VECTORS = [
-      { gtin: "4006381333931", status: "valid", format: "GTIN-13" },
+      { gtin: "5901234123457", status: "valid", format: "GTIN-13" },
       { gtin: "012345678905", status: "valid", format: "UPC-12" },
-      { gtin: "4901020203104", status: "valid", format: "GTIN-13" },
+      { gtin: "4569951116179", status: "valid", format: "GTIN-13" },
       { gtin: "5901234123456", status: "rejected" },
       { gtin: "invalid-gtin", status: "rejected" },
     ] as const;
