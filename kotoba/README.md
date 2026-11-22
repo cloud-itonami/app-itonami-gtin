@@ -27,8 +27,8 @@ All GTIN family codes are left zero-padded to 14 digits for storage:
 |---|---|---|
 | GTIN-8 | 8 | `01234565` → `00000001234565` |
 | UPC-12 | 12 | `012345678905` → `00012345678905` |
-| EAN-13 | 13 | `4006381333931` → `04006381333931` |
-| JAN-13 | 13 | `4901020203104` → `04901020203104` (JAN = 45/49 prefix EAN) |
+| EAN-13 | 13 | `5901234123457` → `05901234123457` (GS1's own worked example) |
+| JAN-13 | 13 | `4569951116179` → `04569951116179` (GS1 Japan Basic Guide worked example; JAN = 45/49 prefix EAN) |
 | GTIN-14 | 14 | `19012345678901` → `19012345678901` |
 
 ## Authority-chain DIDs

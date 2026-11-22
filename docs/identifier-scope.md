@@ -54,9 +54,9 @@ in this repo's README and tests.
 
 | Example | Expected |
 |---|---|
-| `4006381333931` | valid EAN-13 (GS1 documentation example) |
-| `012345678905` | valid UPC-12 (GS1 documentation example) |
-| `4901020203104` | valid GTIN-13, JAN-13 form (prefix 49) |
+| `5901234123457` | valid EAN-13 (GS1's own published worked example; Poland 590 prefix, outside the 45/49 Japanese numbering space) |
+| `012345678905` | valid UPC-12 (canonical published UPC-A example) |
+| `4569951116179` | valid GTIN-13, JAN-13 form (prefix 45; GS1 Japan Basic Guide worked example) |
 | `5901234123456` | rejected, `invalidChecksum` (one digit off a valid vector) |
 | `invalid-gtin` | rejected, `invalidFormat` |
 

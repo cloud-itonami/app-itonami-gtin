@@ -33,7 +33,7 @@ describe("README example", () => {
   it("validateGtin", async () => {
     expect(await validateGtin(e, { gtin: "5901234123457" })).toEqual({ status: "valid", format: "GTIN-13" });
     expect(await validateGtin(e, { gtin: "012345678905" })).toEqual({ status: "valid", format: "UPC-12" });
-    expect(await validateGtin(e, { gtin: "4901020203104" })).toEqual({ status: "valid", format: "GTIN-13" });
+    expect(await validateGtin(e, { gtin: "4569951116179" })).toEqual({ status: "valid", format: "GTIN-13" });
     expect(await validateGtin(e, { gtin: "5901234123456" })).toEqual({ status: "rejected", error: "invalidChecksum" });
     expect(await validateGtin(e, { gtin: "invalid-gtin" })).toEqual({ status: "rejected", error: "invalidFormat" });
   });
@@ -66,7 +66,7 @@ describe("README example", () => {
 
   it("pure helpers", () => {
     expect(normalizeGtinDigits("590-1234-123-457")).toBe("5901234123457");
-    expect(detectCodeType("4901020203104")).toBe("jan-13");
+    expect(detectCodeType("4569951116179")).toBe("jan-13");
     expect(detectCodeType("5901234123457")).toBe("ean-13");
     expect(isValidGtin("5901234123457")).toBe(true);
     expect(toGtin14("5901234123457")).toBe("05901234123457");
