@@ -1,20 +1,9 @@
 /**
- * gtin kotoba — barrel.
+ * gtin kotoba — barrel (validator only, AWAI-3808 / ZB20-D09).
  *
- * Per ADR-2605203000 Option B Phase E reference impl. GS1 Global Trade
- * Item Number registry — supports GTIN-8 / UPC-12 / EAN-13 / JAN-13 /
- * GTIN-14, all canonicalized to GTIN-14 for storage.
- *
- * Slice 1: 3 commands ported (covering all 4 canonical lexicons:
- * product.json record + registerProduct/lookupProduct/validateGtin
- * procedures).
+ * Exports only GTIN shape validation and pure checksum helpers.
+ * There is deliberately no product/holder registry export:
+ * no register*, no lookup*, no list*, and no product collection.
  */
-
 export * from "./types.js";
-export {
-  registerGtin,
-  lookupProduct,
-  validateGtin,
-  listProducts,
-  gtinCheckDigit,
-} from "./registry.js";
+export { validateGtin, findHolderField, HOLDER_FIELDS } from "./validator.js";

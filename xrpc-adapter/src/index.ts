@@ -11,8 +11,7 @@ const NSID_BASE = "com.etzhayyim.gtin";
 interface RouteConfig { method: "POST" | "GET"; handler: Handler; }
 
 const routes: Record<string, RouteConfig> = {
-  [`${NSID_BASE}.registerProduct`]: { method: "POST", handler: (e, input) => gtinRwFree.registerProduct(e, input as any) },
-  [`${NSID_BASE}.lookupProduct`]: { method: "GET", handler: (e, input) => gtinRwFree.lookupProduct(e, input as any) },
+  // Validator only (AWAI-3808 / ZB20-D09): no product/holder registry routes.
   [`${NSID_BASE}.validateGtin`]: { method: "GET", handler: (e, input) => gtinRwFree.validateGtin(e, input as any) },
 };
 
