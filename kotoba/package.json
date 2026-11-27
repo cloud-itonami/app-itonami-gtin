@@ -1,18 +1,14 @@
 {
   "name": "@etzhayyim/gtin-kotoba",
   "version": "0.1.0",
-  "description": "Phase E Option B reference impl of gtin (GS1 Global Trade Item Number registry) on the etzhayyim substrate",
+  "description": "Validator-only GTIN check-digit validation (AWAI-3808): GTIN-8/UPC-12/EAN-13/JAN-13/GTIN-14, no product/holder registry",
   "type": "module",
   "main": "src/index.ts",
   "private": true,
   "scripts": {
     "test": "vitest run"
   },
-  "dependencies": {
-    "@etzhayyim/sdk": "git+https://github.com/etzhayyim/com-etzhayyim-sdk.git#12314a0cc5ac2feb49dd9789d5c002398acb6988"
-  },
   "devDependencies": {
-    "@etzhayyim/sdk-mock": "git+https://github.com/etzhayyim/com-etzhayyim-sdk-mock.git#c857ff9be5310bf433bfe1e8d3c0f677e213d667",
     "vitest": "^4.1.0"
   }
 }

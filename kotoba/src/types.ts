@@ -1,17 +1,11 @@
 /**
- * gtin kotoba — record types.
+ * gtin kotoba — validator types (AWAI-3808, ZB20-D09).
  *
- * Per ADR-2605203000 Option B (PDS XRPC). GS1 Global Trade Item Number
- * registry — supports GTIN-8 / UPC-12 / EAN-13 / GTIN-14, all
- * canonicalized to 14-digit form via left zero-pad. JAN = Japanese
- * 13-digit prefix (45/49) variant of EAN.
- *
- * Identity hierarchy:
- *   did:web:gtin.etzhayyim.com                                 — controller
- *   did:web:gtin.etzhayyim.com:product:{canonicalGtin14}       — Product
+ * Validators only, not registries: this module judges GTIN shape
+ * (length + modulo-10 check digit) and canonicalises to GTIN-14.
+ * It keeps no product, holder, or issuance record and never resolves
+ * a prefix to an owner. See docs/identifier-scope.md.
  */
-
-export const GTIN_DID_PREFIX = "did:web:gtin.etzhayyim.com:" as const;
 
 export type CodeType =
   | "gtin-8"
@@ -21,78 +15,17 @@ export type CodeType =
   | "gtin-14"
   | "invalid";
 
-// ─── Product tier (slice 1) ─────────────────────────────────────────
-
-export interface ProductRecord {
-  did: string;
-  productId: string;
-  /** 14-digit canonical GTIN form (left zero-padded from any source). */
-  canonicalGtin14: string;
-  name: string;
-  brand?: string;
-  model?: string;
-  /** Original code variant used at registration time. */
-  originalCodeType?: CodeType;
-  originalCode?: string;
-  packSize?: string;
-  category?: string;
-  createdAt: string;
-}
-
-export interface ProductView extends ProductRecord {
-  productUri: string;
-}
-
-export interface RegisterProductInput {
-  productId: string;
-  name: string;
-  brand?: string;
-  model?: string;
-  /** Any of gtin / jan / upc / ean — canonicalized to gtin14. */
-  gtin?: string;
-  jan?: string;
-  upc?: string;
-  ean?: string;
-  packSize?: string;
-  category?: string;
-}
-
-export interface RegisterProductOutput {
-  status:
-    | "registered"
-    | "alreadyExists"
-    | "rejected"
-    | "invalidChecksum";
-  productId?: string;
-  productDid?: string;
-  canonicalGtin14?: string;
-  productUri?: string;
-  error?: string;
-}
-
-export interface LookupProductInput {
-  /** Any of gtin / jan / upc / ean — normalized + canonicalized. */
-  code?: string;
-}
-
-export interface LookupProductOutput {
-  product?: ProductView;
-  codeType?: CodeType;
-  canonicalGtin14?: string;
-  error?: string;
-}
-
 export interface ValidateGtinInput {
-  code: string;
+  gtin?: string;
+  code?: string;
+  [key: string]: unknown;
 }
 
 export interface ValidateGtinOutput {
-  valid: boolean;
-  codeType?: CodeType;
-  normalized?: string;
-  canonicalGtin14?: string;
-  checkDigit?: number;
+  status: "valid" | "rejected";
+  format?: string;
   error?: string;
+  field?: string;
 }
 
 // ─── GTIN checksum helpers ──────────────────────────────────────────
@@ -122,8 +55,6 @@ export function toGtin14(digits: string): string | undefined {
 
 /** GTIN modulo 10 check digit — works for GTIN-8/12/13/14. */
 export function gtinCheckDigit(payload: string): number {
-  // Process from rightmost (excluding check digit position).
-  // Weights alternate 3 / 1 from the right-most payload digit.
   let sum = 0;
   for (let i = 0; i < payload.length; i++) {
     const digit = Number(payload[payload.length - 1 - i]);
@@ -139,12 +70,4 @@ export function isValidGtin(digits: string): boolean {
   const payload = digits.slice(0, -1);
   const checkActual = Number(digits[digits.length - 1]);
   return gtinCheckDigit(payload) === checkActual;
-}
-
-export function productDid(canonicalGtin14: string): string {
-  return `${GTIN_DID_PREFIX}product:${canonicalGtin14}`;
-}
-
-export function productRkey(canonicalGtin14: string): string {
-  return `product-${canonicalGtin14}`;
 }
